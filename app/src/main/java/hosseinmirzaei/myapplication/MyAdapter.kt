@@ -5,10 +5,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import hosseinmirzaei.myapplication.Database.User
 import hosseinmirzaei.myapplication.Models.ToDos
 import kotlinx.android.synthetic.main.template_row.view.*
 
-class MyAdapter(private val names: ArrayList<ToDos>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
+class MyAdapter(private val names: ArrayList<User>) : RecyclerView.Adapter<MyAdapter.MyViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.template_row, parent, false)
@@ -16,7 +17,9 @@ class MyAdapter(private val names: ArrayList<ToDos>) : RecyclerView.Adapter<MyAd
     }
 
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
-        holder.text.text = names[position].title
+        holder.usernameText.text = names[position].username
+        holder.emailText.text = names[position].email
+        holder.idText.text = names[position].id.toString()
     }
 
     override fun getItemCount(): Int {
@@ -24,7 +27,9 @@ class MyAdapter(private val names: ArrayList<ToDos>) : RecyclerView.Adapter<MyAd
     }
 
     class MyViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val text: TextView = itemView.itemName
+        val usernameText: TextView = itemView.usernameItem
+        val emailText: TextView = itemView.emailItem
+        val idText: TextView = itemView.idItem
     }
 
 }

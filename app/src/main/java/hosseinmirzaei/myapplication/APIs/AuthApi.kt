@@ -1,5 +1,6 @@
 package hosseinmirzaei.myapplication.APIs
 
+import hosseinmirzaei.myapplication.Database.User
 import hosseinmirzaei.myapplication.Models.ToDos
 import hosseinmirzaei.myapplication.Models.UserModel
 import retrofit2.Call
@@ -13,9 +14,9 @@ interface AuthApi {
         @Path("id") id: Int
     ): Call<UserModel>
 
-    @GET("users/{id}")
+    @GET("users")
     fun getAllUsers(
-    ): Call<ArrayList<UserModel>>
+    ): Call<ArrayList<User>>
 
     @GET("todos")
     fun getToDos(

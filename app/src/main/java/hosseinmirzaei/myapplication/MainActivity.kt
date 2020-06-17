@@ -1,5 +1,6 @@
 package hosseinmirzaei.myapplication
 
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -26,10 +27,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var button: Button
 
-    private val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "users_table").build()
-
     private var toDoList = arrayListOf<ToDos>()
-    private var users = arrayListOf<UserModel>()
+    private var users = arrayListOf<User>()
 
     companion object {
         private val BASE_URL = "https://jsonplaceholder.typicode.com/"
@@ -40,7 +39,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         findViews()
 
-        sentToDosRequest()
+        val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "users_table").build()
+
+        sentUsersRequest()
 
     }
 
@@ -63,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                     println("jalil  onResponse")
                     toDoList.clear()
                     toDoList = response.body()!!
-                    showRecycler(toDoList)
+                    /*showRecycler(toDoList)*/
 
                 } else {
                     println("jalil  onResponse else")
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    /*private fun sentUsersRequest() {
+    private fun sentUsersRequest() {
 
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -92,17 +93,16 @@ class MainActivity : AppCompatActivity() {
         val call = service.getAllUsers()
 
         progressBar.visibility = View.VISIBLE
-        call.enqueue(object : Callback<ArrayList<UserModel>> {
+        call.enqueue(object : Callback<ArrayList<User>> {
 
-            override fun onResponse(call: Call<ArrayList<UserModel>>, response: Response<ArrayList<UserModel>>) {
+            override fun onResponse(call: Call<ArrayList<User>>, response: Response<ArrayList<User>>) {
                 if (response.isSuccessful) {
+
                     println("jalil  onResponse")
                     users.clear()
                     users.addAll(response.body()!!)
-
-                    (0 until users.size).forEach { db.userDao().insertAllUsers(users[it]) }
-
-                    val user = User()
+                    PopulateDb(users, applicationContext).execute()
+                    showRecycler(users)
 
 
                 } else {
@@ -110,20 +110,29 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<ArrayList<UserModel>>, t: Throwable) {
+            override fun onFailure(call: Call<ArrayList<User>>, t: Throwable) {
                 println("jalil  onFailure ${t.message}")
             }
         })
 
-    }*/
+    }
 
-    private fun showRecycler(list: ArrayList<ToDos>) {
+    private fun showRecycler(list: ArrayList<User>) {
 
         recyclerView = findViewById(R.id.recyclerView)
         adapter = MyAdapter(list)
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
         progressBar.visibility = View.INVISIBLE
+
+    }
+
+    class TestDb(private val db: AppDatabase) : AsyncTask<Void, Void, Void>() {
+
+        override fun doInBackground(vararg p0: Void?): Void? {
+            println("jalil ${db.userDao().findByName("Bret").email}")
+            return null
+        }
 
     }
 
