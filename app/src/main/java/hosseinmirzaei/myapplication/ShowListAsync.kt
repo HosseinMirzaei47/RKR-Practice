@@ -3,7 +3,7 @@ package hosseinmirzaei.myapplication
 import android.os.AsyncTask
 import android.util.Log
 import hosseinmirzaei.myapplication.APIs.AuthApi
-import hosseinmirzaei.myapplication.Models.User
+import hosseinmirzaei.myapplication.Models.UserModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,8 +27,8 @@ class ShowListAsync(private val names: ArrayList<String>) : AsyncTask<Void, Void
 
         val call = service.getUser(1)
 
-        call.enqueue(object : Callback<User> {
-            override fun onResponse(call: Call<User>, response: Response<User>) {
+        call.enqueue(object : Callback<UserModel> {
+            override fun onResponse(call: Call<UserModel>, response: Response<UserModel>) {
                 if (response.isSuccessful && response.body()!!.username != null) {
 
                     names.add(response.body()!!.username!!)
@@ -37,7 +37,7 @@ class ShowListAsync(private val names: ArrayList<String>) : AsyncTask<Void, Void
                 }
             }
 
-            override fun onFailure(call: Call<User>, t: Throwable) {
+            override fun onFailure(call: Call<UserModel>, t: Throwable) {
                 Log.i("jalil", t.message)
             }
         })

@@ -3,7 +3,7 @@ package hosseinmirzaei.myapplication.Models
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
-class User() {
+class UserModel() {
 
     @SerializedName("id")
     @Expose

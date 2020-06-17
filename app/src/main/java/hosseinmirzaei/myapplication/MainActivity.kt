@@ -7,8 +7,12 @@ import android.widget.ProgressBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.room.Room
 import hosseinmirzaei.myapplication.APIs.AuthApi
+import hosseinmirzaei.myapplication.Database.AppDatabase
+import hosseinmirzaei.myapplication.Database.User
 import hosseinmirzaei.myapplication.Models.ToDos
+import hosseinmirzaei.myapplication.Models.UserModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -19,10 +23,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecyclerView.Adapter<*>
-    lateinit var progressBar: ProgressBar
+    private lateinit var progressBar: ProgressBar
     private lateinit var button: Button
 
+    private val db = Room.databaseBuilder(applicationContext, AppDatabase::class.java, "users_table").build()
+
     private var toDoList = arrayListOf<ToDos>()
+    private var users = arrayListOf<UserModel>()
 
     companion object {
         private val BASE_URL = "https://jsonplaceholder.typicode.com/"
@@ -33,11 +40,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         findViews()
 
-        sendRequest()
+        sentToDosRequest()
 
     }
 
-    private fun sendRequest() {
+    private fun sentToDosRequest() {
 
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
@@ -73,6 +80,42 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+
+    /*private fun sentUsersRequest() {
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(AuthApi::class.java)
+        val call = service.getAllUsers()
+
+        progressBar.visibility = View.VISIBLE
+        call.enqueue(object : Callback<ArrayList<UserModel>> {
+
+            override fun onResponse(call: Call<ArrayList<UserModel>>, response: Response<ArrayList<UserModel>>) {
+                if (response.isSuccessful) {
+                    println("jalil  onResponse")
+                    users.clear()
+                    users.addAll(response.body()!!)
+
+                    (0 until users.size).forEach { db.userDao().insertAllUsers(users[it]) }
+
+                    val user = User()
+
+
+                } else {
+                    println("jalil  onResponse else")
+                }
+            }
+
+            override fun onFailure(call: Call<ArrayList<UserModel>>, t: Throwable) {
+                println("jalil  onFailure ${t.message}")
+            }
+        })
+
+    }*/
 
     private fun showRecycler(list: ArrayList<ToDos>) {
 
